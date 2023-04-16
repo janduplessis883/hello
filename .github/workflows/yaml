@@ -1,0 +1,21 @@
+name: Greet User
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  greet:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get name from webhook payload
+        run: echo ::set-env name=${{ toJson(github.event.inputs.name) }}
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Send greeting to webhook
+        run: |
+          curl -X POST https://webhook.site/17e559da-239f-4d7f-bfde-021edc1cb370 \
+            -H 'Content-Type: application/json' \
+            -d "{\"message\": \"Hello ${name}!\"}"
